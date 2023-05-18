@@ -1,0 +1,96 @@
+
+<div align="center" name="table" id="table"></div>
+<div align="center">
+ <form name="f1">
+  N = <select name="N_select" id="N_select"></select>
+  M = <select name="M_select" id="M_select"></select>
+  <input type="button" value="New" onclick="create()">
+  <input type="button" value="Calc" onclick="get()">
+ </form>
+ <p id="result"></p>
+</div>
+
+<script>
+ function DynamicTable (N,M,tableId) { //Объект Динамическая таблица
+  this.N = N; this.M = M;
+  var tableDiv;
+
+  this.table = function() { //Формирование таблицы в элементе tableId
+   tableDiv = document.getElementById(tableId);
+   var tbl = document.createElement('table');
+   tbl.setAttribute('align', 'center');
+   tbl.setAttribute('border', '1');
+   var tbdy = document.createElement('tbody');
+   for (var i = 1; i <= N; i++) {
+    var tr = document.createElement('tr');
+    for (var j = 1; j <= M; j++) {
+     var td = document.createElement('td');
+     var inp = document.createElement('input');
+     inp.setAttribute('type', 'input');
+     inp.setAttribute('size', '5'); //видимый размер
+     inp.setAttribute('maxlength', '4'); //макс.длина ввода
+     inp.setAttribute('id', 'c'+i+''+j); //inp.id = "";
+     inp.setAttribute('name', 'c'+i+''+j);
+     td.appendChild(inp);
+     tr.appendChild(td);
+    }
+    tbdy.appendChild(tr);
+   }
+   tbl.appendChild(tbdy);
+   tableDiv.appendChild (tbl);
+  }
+
+  this.erase = function () { //Удалить старую таблицу
+   while (tableDiv.firstChild) { 
+    tableDiv.removeChild (tableDiv.firstChild);
+   }
+  }
+
+  this.calc = function() { //Вычисления
+   var s = 0;
+   for (var i = 1; i <= N; i++)
+   for (var j = 1; j <= M; j++) {
+    var n = parseFloat(document.getElementById("c"+i+""+j).value);
+    if (isNaN(n)) document.getElementById("c"+i+""+j).value = '0';
+    else s += n;
+   }
+   document.getElementById('result').innerHTML = s;
+  }
+ }
+
+ var task; //Объект таблицы
+
+ function get() { //Вычисления по заполненной таблице
+  task.calc();
+ }
+
+ function create() { //По кнопке New создать новую таблицу нужного размера
+  var n = parseInt (document.f1.N_select.value);
+  if (isNaN(n)) {
+   n = 3; document.f1.N_select.value = n;
+  }
+  var m = parseInt (document.f1.M_select.value);
+  if (isNaN(m)) {
+   m = 3; document.f1.M_select.value = m;
+  }
+  task.erase();
+  task = new DynamicTable (n,m,'table');
+  task.table();
+ }
+
+ function putLists (low,hi,def) { //Получить списки значений для размерностей таблицы
+  var s = '';
+  for (var i = low; i<= hi; i++) s += '<option value="'+i+'"'+
+   (i==def?' selected':'')+'>'+i+"\n";
+  document.getElementById('N_select').innerHTML = s;
+  document.getElementById('M_select').innerHTML = s;
+ }
+
+ window.addEventListener('load', function (e) {
+  //По загрузке страницы создать объекты по умолчанию
+  putLists (2,9,3);
+  task = new DynamicTable(3,3,'table');
+  task.table();
+ }, false); 
+</script>
+<noscript><div align="center">Включите Javascript для работы приложения!</div></noscript>

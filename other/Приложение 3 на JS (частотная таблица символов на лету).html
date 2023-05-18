@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+ <head>
+ <meta charset="utf-8">
+ <title>Проект Javascript 3</title>
+ </head>
+ <body>
+ 
+ <form name="myForm">
+  <p>Введите или вставьте текст:<br>
+   <textarea id="myText" rows="12" cols="80"
+   onselect = "myDo(this.id,'myResult')" 
+   onclick  = "myDo(this.id,'myResult')" 
+   onkeyup  = "myDo(this.id,'myResult')"
+   ></textarea>
+  </p>
+  <p>Результат обработки:<br>
+   <textarea id="myResult" rows="12" cols="80"
+    readonly></textarea>
+  </p>
+ </form>
+ <script>
+  function myDo (idText, idRes) {
+   var text = document.getElementById(idText).value;
+   var arr = text.split(''); //массив символов
+   var n = arr.length, freq = [], c = '';
+   while (n--) { //прошлись по всем символам
+    c = arr[n]; 
+	freq[c] = (freq[c] || 0) + 1; //инициализировали 1 или прибавили 1
+   }
+   //console.log(freq);
+   keys = Object.keys(freq); keys.sort(); //вытащили символы-ключи массива freq
+   var res = keys.map ( function (c) {
+    var c1; if (c=='\t') c1 = 'TAB';
+	else if (c=='\n') c1 = 'NEWLINE';
+	else if (c==' ') c1 = 'SPACE';
+	else c1 = c;
+    return c1 + ': ' + freq[c]+"\n";
+   });
+   document.getElementById(idRes).value = res;
+  }
+ </script>
+ <noscript>
+  <p>Требуется JavaScript для работы приложения!</p>
+ </noscript>
+ 
+ </body></html>

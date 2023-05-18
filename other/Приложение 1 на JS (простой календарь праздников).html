@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+ <head>
+ <meta charset="utf-8">
+ <title>Проект Javascript</title>
+ <link rel="stylesheet" href="style.css">
+ </head>
+ <body>
+ 
+ <div id="holidayId" style="background-color: #CCFFCC">
+  Сегодня нет праздника...
+ </div>
+ <script>
+  var checkHoliday = function (id) {
+   var Holidays = [ //массив праздников
+    //о каждом: день, месяц, описание
+	{ day: 28, month: 10, desc: 'День хомячка' }, //0
+	{ day: 31, month: 12, desc: 'Новый год' }     //1
+   ];
+   function today () { //Сегодня в формате {day: 31, month:12}
+    var t = new Date();
+	var d = t.getDate();
+	var m = t.getMonth() + 1;
+	//console.log (d+' '+m); //Ctrl+Shift+J
+	return { day: d, month: m };
+   }
+   function check (t) {//Номер праздника в списке или -1
+    for (var i=0; i < Holidays.length; i++)
+	 if (Holidays[i].day == t.day &&
+	     Holidays[i].month == t.month) return i;
+	return -1;
+   }
+   function strDate (t) {
+    var monthes = [ '','января','февраля','марта','апреля','мая','июня',
+	 'июля','августа','сентября','октября','ноября','декабря'
+	];
+	return t.day+' '+ monthes[t.month];
+   }
+   var t = today(); //alert (t.day+' '+t.month);
+   var k = check (t);
+   if (k > -1) { //если сегодня найден праздник
+    var el = document.getElementById(id);
+	el.innerHTML = strDate(t)+': '+Holidays[k].desc; //или .value, если элемент ввода (текстовое поле)
+   }
+  };
+ 
+  window.addEventListener ('load', function (e) {
+   checkHoliday('holidayId'); //передали id раздела, куда пишем
+  } );
+ </script>
+ <noscript>Включите Javascript в браузере!</noscript>
+ </body>
+</html>

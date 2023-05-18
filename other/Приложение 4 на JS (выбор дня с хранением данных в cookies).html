@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ru">
+ <head>
+ <meta charset="utf-8">
+ <title>Проект Javascript 4</title>
+ </head>
+ <body>
+
+ <div id="myMood"></div>
+ <script>
+/* Некоторые браузеры, например, Chrome, не сохраняют
+   cookies для локальных файлов, открытых по протоколу
+   file://
+   В этом случае откройте файл с помощью локального 
+   сервера, скажем, XAMPP
+*/
+ (function (gameId) {  
+  var divId = document.getElementById (gameId);
+  var p1 = document.createElement('p');
+  p1.innerHTML = 
+  'Моё настроение сегодня:'+
+  '<br><input type="radio" name="moods" id="myMood5" value="5">'+
+  '<label for="myMood5">'+
+  'Вау! (<span id="cntMood5">0</span>)</label>'+
+  '<br><input type="radio" name="moods" id="myMood4" value="4">'+
+  '<label for="myMood4">'+
+  'Норм (<span id="cntMood4">0</span>)</label>'+
+  '<br><input type="radio" name="moods" id="myMood3" value="3">'+
+  '<label for="myMood3">'+
+  'Хм-м... (<span id="cntMood3">0</span>)</label>'+
+  '<br><input type="radio" name="moods" id="myMood2" value="2">'+
+  '<label for="myMood2">'+
+  'Бе-е (<span id="cntMood2">0</span>)</label>';
+  divId.appendChild (p1);
+  document.getElementById("myMood5").addEventListener ("click", function(e) { check(5); });
+  document.getElementById("myMood4").addEventListener ("click", function(e) { check(4); });
+  document.getElementById("myMood3").addEventListener ("click", function(e) { check(3); });
+  document.getElementById("myMood2").addEventListener ("click", function(e) { check(2); });
+   
+  var p2 = document.createElement('p');
+  p2.id = "msgBox";
+  p2.style.fontSize = "80%";
+  divId.appendChild (p2);
+  
+  var checked = true;
+    
+  function setCookie (name, value, expires) {
+   let c = name + "=" + escape(value)+
+    (expires ? "; expires="+expires.toGMTString() : "");
+   document.cookie = c; //Ограничение 4 Кб!
+  }
+  
+  function getCookie (name) {
+   let p = name+"=";
+   let i1 = document.cookie.indexOf(p);
+   if (i1 == -1) return null;
+   let i2 = document.cookie.indexOf(";",i1 + p.length);
+   if (i2 == -1) i2 = document.cookie.length;
+   return unescape(
+    document.cookie.substring(i1 + p.length,i2));
+  }
+  
+  function fixDate(date) {
+   let base = new Date (0);
+   let t = base.getTime();
+   if (t > 0) date.setTime(date.getTime()-t);
+  }
+  
+  function check (m) {
+   if (!checked) { putMessage (1); return; }
+   let el = document.getElementById("cntMood"+m);
+   let c = parseInt(el.innerHTML); 
+   if (!isNaN(c)) c++; else c = 0;
+   el.innerHTML = c; 
+   checked = false;
+  }
+  
+  function today () { 
+   let date = new Date();
+   let day=date.getDate();
+   let month=date.getMonth() + 1;
+   let year = date.getFullYear();
+   return (day<10 ? '0' : '') + day + '/' + 
+          (month<10 ? '0' : '') + month + '/' + year;
+  }
+  
+  function putMessage (n) {
+   let messages = [
+    "Отметьте настроение дня",
+    "Сегодняшнее настроение уже отмечено, приходите завтра :)"
+   ];
+   if (n<0 || n>messages.length-1) n = 0;
+   document.getElementById("msgBox").innerHTML = messages[n];
+  }
+  
+  window.addEventListener('load', function(e) {
+   for (let m = 5; m >= 2; m--) {
+    let c = getCookie("myMood"+m);
+    if (c==undefined || c=='') c = '0';
+    let el = document.getElementById("cntMood"+m);
+    el.innerHTML = c;
+   }
+   let c = getCookie("myDate");
+   let d = today();
+   if (c == d) {
+    checked = false;
+    putMessage (1);
+   }
+   else putMessage (0);
+  });
+  
+  window.addEventListener('beforeunload', function(e) {
+   let n, now = new Date();
+   fixDate(now);
+   now.setTime(now.getTime()+5*365*24*60*60*1000);
+   for (let m = 5; m >= 2; m--) {
+    let el = document.getElementById("cntMood"+m).innerHTML;
+    setCookie("myMood"+m,parseInt(el),now);
+   }
+   setCookie("myDate",today(),now);
+  });
+ }("myMood"));
+ </script>
+ <noscript>
+  <p>Требуется JavaScript для работы приложения!</p>
+ </noscript>
+ 
+ </body></html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+ <head>
+ <meta charset="utf-8">
+ <title>Проект Javascript 2</title>
+ </head>
+ <body>
+ 
+ <form name="myForm">
+  <p>Введите или вставьте текст:<br>
+   <textarea name="myText" rows="12" cols="80"></textarea>
+  </p>
+  <p>Результат обработки:<br>
+   <textarea name="myResult" rows="12" cols="80"
+    readonly></textarea>
+  </p><p> 
+<input type="button" value="Обработать" onclick="myDo();">
+<input type="button" value="Очистить" onclick="myClear();">
+  </p>
+ </form>
+ <script>
+  function myDo() {
+   var words = document.myForm.myText.value;
+   words = words.replace (/<\/?[^>]+(>|$)/gm,''); //удалить теги
+   var arr = words.split(/\s+/); //разбить на слова
+   arr = arr.filter( function (n)    { //отфильтровали ненужные слова
+    return n!=undefined && n != '';  } );
+   arr.sort(); //сортируем как строки
+   arr = Array.from (new Set(arr)); //оставили только уникальные
+   var res = '';
+   arr.forEach ( //применили действие функции к каждому элементу
+    function (item, i, arr) {
+	 res += (i+1) + '. ' + item + "\n";
+	}   );
+   res += 'Всего слов: ' + arr.length;
+   document.myForm.myResult.value = res;
+  }
+  function myClear() {
+   document.myForm.myText.value = '';
+   document.myForm.myResult.value = '';
+  }
+ </script>
+ <noscript>
+  <p>Требуется JavaScript для работы приложения!</p>
+ </noscript>
+ 
+ </body></html>
